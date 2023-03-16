@@ -27,5 +27,12 @@ h2 {
 .item {
   position: absolute;
   display: block;
-  background-color: red;
+  inset: 0;
+  text-align: center;
+  /* background-color: red; */
+}
+
+.item span {
+  background-color: transparent;
+  color: black;
 }

@@ -34,37 +34,47 @@ class ClickedElement {
 // Write Javascript code!
 const wrapper = document.getElementById('wrapper');
 const max = 24;
-const wrapperScale = wrapper.clientHeight / 24;
-const containers = [
-  new containerItem(0, 4),
-  new containerItem(12, 2),
-  new containerItem(18, 2),
-];
+const wrapperScale = wrapper.clientHeight / max;
+const containers = [new containerItem(6, 3), new containerItem(10, 5)];
 // const containerHeight = 3;
 // const containerHeightPx = containerHeight * wrapperScale;
 
 let lastPressedElement = new ClickedElement(null, 0);
+const template = document.getElementById('wrapperTemplate');
 
 containers.forEach((container, index) => {
-  const containerBox = document.createElement('div');
-  containerBox.classList.add('box');
+  const templateClone = template.childNodes[1].cloneNode(true);
 
-  const item = document.createElement('div');
-  item.classList.add('item');
-  containerBox.appendChild(item);
+  console.log(template.childNodes[1]);
 
   const insetTop = container.topValue * wrapperScale;
   const insetBottom =
     (max - container.height - container.topValue) * wrapperScale;
+  setInset(templateClone, insetTop, insetBottom);
+  templateClone.setAttribute('data-index', index);
 
-  containerBox.setAttribute('style', '');
-  containerBox.setAttribute('draggable', 'false');
-  setInset(containerBox, insetTop, insetBottom);
-  containerBox.setAttribute('data-index', index);
+  wrapper.appendChild(templateClone);
 
-  wrapper.appendChild(containerBox);
-  console.log(containerBox);
+  // const containerBox = document.createElement('div');
+  // containerBox.classList.add('box');
+
+  // const item = document.createElement('div');
+  // item.classList.add('item');
+  // containerBox.appendChild(item);
+
+  // const insetTop = container.topValue * wrapperScale;
+  // const insetBottom =
+  //   (max - container.height - container.topValue) * wrapperScale;
+
+  // containerBox.setAttribute('style', '');
+  // containerBox.setAttribute('draggable', 'false');
+  // setInset(containerBox, insetTop, insetBottom);
+  // containerBox.setAttribute('data-index', index);
+
+  // wrapper.appendChild(containerBox);
 });
+
+template.remove();
 
 document.addEventListener('mousemove', mouse_move);
 document.addEventListener('mousedown', mouse_down);
@@ -103,23 +113,36 @@ function mouse_move(event) {
     let insetBottomSnap = lastPressedElement.startBottom;
 
     if (lastPressedElement.type == 1 || lastPressedElement.type == 2) {
-      insetTopSnap = snapToIncrement(insetTop);
+      insetTopSnap = Math.round(snapToIncrement(insetTop));
+      if (insetTopSnap < 0) {
+        insetTopSnap = 0;
+      }
     }
     if (lastPressedElement.type == 2) {
       const maxPx = max * wrapperScale;
       const containerHeightPx =
         containers[lastPressedElement.dataIndex].height * wrapperScale;
-      insetBottomSnap = maxPx - containerHeightPx - insetTopSnap;
+      insetBottomSnap = Math.round(maxPx - containerHeightPx - insetTopSnap);
     }
     if (lastPressedElement.type == 3) {
       const insetBottom =
         lastPressedElement.startBottom - lastPressedElement.dragDistY;
-      insetBottomSnap = snapToIncrement(insetBottom);
+      insetBottomSnap = Math.round(snapToIncrement(insetBottom));
+      if (insetBottomSnap < 0) {
+        insetBottomSnap = 0;
+      }
+      console.log(insetBottomSnap);
     }
 
-    lastPressedElement.snapTop = insetTopSnap / wrapperScale;
-    lastPressedElement.snapHeight =
-      max - (insetTopSnap + insetBottomSnap) / wrapperScale;
+    lastPressedElement.snapTop = Math.round(insetTopSnap / wrapperScale);
+    lastPressedElement.snapHeight = Math.round(
+      max - (insetTopSnap + insetBottomSnap) / wrapperScale
+    );
+
+    if (lastPressedElement.snapHeight < 1) {
+      lastPressedElement.snapHeight = 1;
+      return;
+    }
 
     if (insetTopSnap >= 0 && insetBottomSnap >= 0) {
       setInset(lastPressedElement.element, insetTopSnap, insetBottomSnap);
@@ -148,6 +171,8 @@ function mouse_up(event) {
       containers[lastPressedElement.dataIndex].height = Math.round(
         lastPressedElement.snapHeight
       );
+    } else {
+      alert('click !');
     }
   }
 
