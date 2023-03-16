@@ -1,10 +1,12 @@
-h1, h2 {
+h1,
+h2 {
   font-family: Lato;
 }
 
-.wrapper{
+.wrapper {
   position: relative;
   background-color: green;
+  border-radius: 5px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 10%;
@@ -12,14 +14,17 @@ h1, h2 {
   height: 400px;
 }
 
-.box{
+.box {
   position: absolute;
+  pointer-events: none;
   display: block;
   background-color: #acf;
+  opacity: 50%;
+  border-radius: 5px;
   /* inset: 0px 0px 0px 0px; */
 }
 
-.item{
+.item {
   position: absolute;
   display: block;
   background-color: red;
