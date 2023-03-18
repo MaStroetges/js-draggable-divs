@@ -20,7 +20,8 @@ h2 {
   display: block;
   background-color: #acf;
   opacity: 50%;
-  border-radius: 5px;
+  border-radius: 10px;
+  border-style: solid;
   /* inset: 0px 0px 0px 0px; */
 }
 

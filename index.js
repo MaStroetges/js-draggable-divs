@@ -2,9 +2,10 @@
 import './style.css';
 
 class containerItem {
-  constructor(topValue = 0, height = 1) {
+  constructor(topValue = 0, height = 1, minHeight = 2) {
     this.topValue = topValue;
     this.height = height;
+    this.minHeight = minHeight;
   }
 }
 
@@ -35,7 +36,11 @@ class ClickedElement {
 const wrapper = document.getElementById('wrapper');
 const max = 24;
 const wrapperScale = wrapper.clientHeight / max;
-const containers = [new containerItem(6, 3), new containerItem(10, 5)];
+const containers = [
+  new containerItem(5, 5, 2),
+  new containerItem(10, 3, 2),
+  new containerItem(13, 7, 2),
+];
 // const containerHeight = 3;
 // const containerHeightPx = containerHeight * wrapperScale;
 
@@ -139,7 +144,10 @@ function mouse_move(event) {
       max - (insetTopSnap + insetBottomSnap) / wrapperScale
     );
 
-    if (lastPressedElement.snapHeight < 1) {
+    if (
+      lastPressedElement.snapHeight <
+      containers[lastPressedElement.dataIndex].minHeight
+    ) {
       lastPressedElement.snapHeight = 1;
       return;
     }
